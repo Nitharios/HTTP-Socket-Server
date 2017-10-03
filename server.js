@@ -22,8 +22,9 @@ const server = net.createServer((request) => {
   console.log('2nd:', sanity);
 
   request.on('data', (data) => {
+    console.log('emitted:\n', data);
     formatData(data);
-    getMethodAndURI(data);
+    getRequestInfo(data);
   });
 
   request.end();
@@ -44,19 +45,40 @@ server.listen(PORT, () => {
 
 ///// FUNCTIONS /////
 
+// the LONG ASS IF FUNCTION
+function generateResponse(data) {
+  let requestInfo = getRequestInfo(data);
+  let method = requestInfo.method;
+  let uri = requestInfo.uri;
+
+  if (method === 'GET') {
+    if (uri === '/index.html') {
+
+    } else if (uri === '/helium.html') {
+
+    } else if (uri === '/hydrogen.html') {
+
+    } else if (uri === '/styles.css') {
+
+    } else {
+
+    }
+  }
+}
+
 // returns Method and URI as strings in an object
-function getMethodAndURI(data) {
+function getRequestInfo(data) {
   let tempData = data.split('\r\n');
   let methodLine = tempData[0];
   methodLine = methodLine.split(' ');
   let method = methodLine[0];
-  let uri = methodLine[2];
-  console.log('method', method);
-  console.log('uri', uri);
+  let uri = methodLine[1];
+  let type = methodLine[2];
 
   return {
     method : method,
-    uri : uri
+    uri : uri,
+    type : type
   };
 }
 
