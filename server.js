@@ -58,18 +58,25 @@ function generateResponse(request, data) {
   // this is the error or bad link catch
   if (!files.hasOwnProperty(uri)) {
     fs.readFile(`./source/error.html`, (err, data) => {
-      process.stdout.write(`${serverName}${uri} 404 NOT FOUND \n${server} \n${date} \n${content_type} \nContent-Length: ${data.length} \n${connection} \n\n${data} \n`);        
+      if (method === 'GET') { 
+        request.write(`${serverName}${uri} 404 NOT FOUND \n${server} \n${date} \n${content_type} \nContent-Length: ${data.length} \n${connection} \n\n${data} \n`, (err) => {
+          if (err) throw err;
+          request.end();
+        });
+      }     
     });
 
   } else { 
     fs.readFile(`./source${uri}`, (err, data) => {
       if (method === 'GET') {
-        process.stdout.write(`${serverName}${uri} 200 OK \n${server} \n${date} \n${content_type} \nContent-Length: ${data.length} \n${connection} \n\n${data} \n`);
+        request.write(`${serverName}${uri} 200 OK \n${server} \n${date} \n${content_type} \nContent-Length: ${data.length} \n${connection} \n\n${data} \n`, (err) => {
+          if (err) throw err;
+          request.end();
+        });
       }
     });
   }
   // ends connection after information has been sent to client
-  request.end();
 }
 
 // returns Method and URI as strings in an object
