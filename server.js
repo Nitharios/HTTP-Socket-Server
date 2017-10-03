@@ -23,6 +23,7 @@ const server = net.createServer((request) => {
 
   request.on('data', (data) => {
     formatData(data);
+    getMethodAndURI(data);
   });
 
   request.end();
@@ -42,6 +43,23 @@ server.listen(PORT, () => {
 });
 
 ///// FUNCTIONS /////
+
+// returns Method and URI as strings in an object
+function getMethodAndURI(data) {
+  let tempData = data.split('\r\n');
+  let methodLine = tempData[0];
+  methodLine = methodLine.split(' ');
+  let method = methodLine[0];
+  let uri = methodLine[2];
+  console.log('method', method);
+  console.log('uri', uri);
+
+  return {
+    method : method,
+    uri : uri
+  };
+}
+
 function formatData(data) {
   let tempData = data.split('\r\n');
   // console.log(tempData);
