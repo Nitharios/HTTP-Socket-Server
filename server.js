@@ -1,37 +1,31 @@
 // jshint esversion:6
-
 const sanity = "You're not crazy!";
-console.log('1st:', sanity);
+console.log(sanity);
 
-///// ACTUAL CODE /////
+/* ACTUAL CODE */
 
+// stuff required to run the stuff we want
 const net = require('net');
 const fs = require('fs');
 
+// set this stuff now so it's easier to use later
 const serverName = 'https://www.ihateNET.com';
 const PORT = process.env.PORT || 8080;
 const timeStamp = new Date();
-
-let requestData = [];
-let files = {
-  index_html : '/index.html',
-  helium_html : '/helium.html',
-  hydrogen_html : '/hydrogen.html',
-  styles_css : '/styles.css'
+const files = {
+  '/index.html' : '/index.html',
+  '/helium.html' : '/helium.html',
+  '/hydrogen.html' : '/hydrogen.html',
+  '/styles.css' : '/styles.css'
 };
 
+// create the server which handles connection requests
 const server = net.createServer((request) => {
   request.setEncoding('utf8');
 
-  // console.log('2nd:', sanity);
-
   request.on('data', (data) => {
-    // console.log('emitted:\n', data);
-    generateResponse(data);
+    generateResponse(request, data);
   });
-
-  request.end();
-
   // async, runs more than once...
   request.on('end', () => {
     console.log('Client has disconnected');
@@ -46,10 +40,10 @@ server.listen(PORT, () => {
   console.log(`Listening on port ${PORT}`);
 });
 
-///// FUNCTIONS /////
+/* FUNCTIONS */
 
-// will generate the response text
-function generateResponse(data) {
+// does stuff...
+function generateResponse(request, data) {
   let requestInfo = getRequestInfo(data);
   let method = requestInfo.method;
   let uri = requestInfo.uri;
@@ -58,57 +52,37 @@ function generateResponse(data) {
   let date = requestInfo.date;
   let content_type = requestInfo.content_type;
   let connection = requestInfo.connection;
-  let info;
 
-  if (method === 'GET') {
-    for (let path in files) {
-      if (uri === files[path]) {
-        // readFileData(uri, (err, data) => {
-        //   if (err) return err;
-        //   else return data;
+  // file reader with information formatter inside ASYNC function
+  // this is the error or bad link catch
+  if (!files.hasOwnProperty(uri)) {
+    fs.readFile(`./source/error.html`, (err, data) => {
+      console.log(`${serverName}${uri} 404 NOT FOUND \n${server} \n${date} \n${content_type} \nContent-Length: \n${connection} \n\n${data}`);        
+    });
 
-        // });
-        info = readFileData(uri);
-        return console.log(`${serverName}${uri} 200 OK \n${server} \n${date} \n${content_type} \nContent-Length: \n${connection} \n\n${info}`);
-
-      } else {
-        info = readFileData('/error.html');
-        return console.log(`${serverName}${uri} 404 NOT FOUND \n${server} \n${date} \n${content_type} \nContent-Length: \n${connection} \n\n${info}`);        
+  } else { 
+    fs.readFile(`./source${uri}`, (err, data) => {
+      if (method === 'GET') {
+        console.log(`${serverName}${uri} 200 OK \n${server} \n${date} \n${content_type} \nContent-Length: \n${connection} \n\n${data}`);
       }
-    }
+    });
   }
-}
-
-// file reader
-function readFileData(uri) {
-  // return fs.readFile(`./source${uri}`, (err, data) => {
-  //     if (err) throw err;
-  //     else return data;
-  // });
-
-  // fs.readFile(`./source${uri}`, (err, data) => {
-  //   if (err) cb(err, null);
-  //   else cb(null, data);
-  // });
-
-  let readableData = fs.readFileSync(`./source${uri}`, (err, data) => {
-    if (err) throw err;
-  });
-
-  // console.log(readableData.toString());
-  return readableData.toString();
+  // ends connection after information has been sent to client
+  request.end();
 }
 
 // returns Method and URI as strings in an object
 function getRequestInfo(data) {
   let tempData = data.split('\r\n');
-  // console.log('crazy', tempData);
   let connection = tempData[tempData.length-3];
-  let methodLine = tempData[0];
-  methodLine = methodLine.split(' ');
+  let methodLine = tempData[0].split(' ');
   let method = methodLine[0];
   let uri = methodLine[1];
   let type = methodLine[2];
+
+  // handles any pesky links ending with 'l'
+  if (uri === '/') uri = '/index.html';
+  else if (uri[uri.length-1] === '/') uri = uri.slice(0, (uri.length-1));
 
   return {
     method : method,
@@ -121,9 +95,7 @@ function getRequestInfo(data) {
   };
 }
 
-
-
-///// SCRATCH /////
+/* SCRATCH */
 
 // function formatData(data) {
 //   let tempData = data.split('\r\n');
