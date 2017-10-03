@@ -71,9 +71,8 @@ function generateResponse(request, data) {
   } else { 
     fs.readFile(`./source${uri}`, 'utf8', (err, data) => {
       if (err) throw err;
-      if (method === 'GET') {
-        console.log(`${type} 200 OK \n${server} \nDate: ${date} \nContent-Type: ${content_type} \nContent-Length: ${data.length} \n${connection} \n\n${data} \n`);
-        request.write(`${type} 200 OK \n${server} \nDate: ${date} \nContent-Type: ${content_type} \nContent-Length: ${data.length} \n${connection} \n\n${data} \n`, (err) => {
+      if (method === 'GET' || method === 'HEAD') {
+        request.write(`${type} 200 OK\nServer: ${server}\nDate: ${date}\nContent-Type: ${content_type}\nContent-Length: ${data.length}\nConnection: ${connection}\n\n${data}`, (err) => {
           if (err) throw err;
           console.log('end');
           request.end();
@@ -89,6 +88,7 @@ function getRequestInfo(data) {
   let tempData = data.split('\r\n');
   console.log(tempData);
   let connection = tempData[tempData.length-3];
+  console.log(connection);
   let methodLine = tempData[0].split(' ');
   let method = methodLine[0];
   let uri = methodLine[1];
@@ -102,10 +102,10 @@ function getRequestInfo(data) {
     method : method,
     uri : uri,
     type : type,
-    server : 'Server: nginx/1.4.6 (Ubuntu)',
+    server : 'nginx/1.4.6 (Ubuntu)',
     date : timeStamp,
     content_type : 'text/html; charset=utf-8',
-    connection : connection
+    connection : 'keep-alive'
   };
 }
 
