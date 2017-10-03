@@ -63,11 +63,17 @@ function generateResponse(data) {
   if (method === 'GET') {
     for (let path in files) {
       if (uri === files[path]) {
+        // readFileData(uri, (err, data) => {
+        //   if (err) return err;
+        //   else return data;
+
+        // });
         info = readFileData(uri);
-        console.log(`${type} 200 OK \n${server} \n${date} \n${content_type} \nContent-Length: ${info.length} \n${connection} \n\n${info}`);        
+        return console.log(`${type} 200 OK \n${server} \n${date} \n${content_type} \nContent-Length: \n${connection} \n\n${info}`);
+
       } else {
-      info = readFileData('/error.html');
-        console.log(`${type} 404 NOT FOUND \n${server} \n${date} \n${content_type} \nContent-Length: ${info.length} \n${connection} \n\n${info}`);        
+        info = readFileData('/error.html');
+        return console.log(`${type} 404 NOT FOUND \n${server} \n${date} \n${content_type} \nContent-Length: \n${connection} \n\n${info}`);        
       }
     }
   }
@@ -75,6 +81,16 @@ function generateResponse(data) {
 
 // file reader
 function readFileData(uri) {
+  // return fs.readFile(`./source${uri}`, (err, data) => {
+  //     if (err) throw err;
+  //     else return data;
+  // });
+
+  // fs.readFile(`./source${uri}`, (err, data) => {
+  //   if (err) cb(err, null);
+  //   else cb(null, data);
+  // });
+
   let readableData = fs.readFileSync(`./source${uri}`, (err, data) => {
     if (err) throw err;
   });
