@@ -13,6 +13,13 @@ const PORT = process.env.PORT || 8080;
 const timeStamp = new Date();
 
 let requestData = [];
+let files = {
+  index_html : '/index.html',
+  error_html : '/error.html',
+  helium_html : '/helium.html',
+  hydrogen_html : '/hydrogen.html',
+  styles_css : '/styles.css'
+};
 
 const server = net.createServer((request) => {
   request.setEncoding('utf8');
@@ -52,26 +59,42 @@ function generateResponse(data) {
   let date = requestInfo.date;
   let content_type = requestInfo.content_type;
   let connection = requestInfo.connection;
+  let info;
 
   if (method === 'GET') {
     if (uri === '/' || uri === '/index.html') {
-      console.log(`${type} 200 OK \n${server} \n${date} \n${content_type} \nContent-Length: ${staticData.index_html.length} \n${connection}`);
+      info = readFileData(uri);
+      console.log(`${type} 200 OK \n${server} \n${date} \n${content_type} \nContent-Length: ${info.length} \n${connection} \n\n${info}`);
     } else if (uri === '/helium.html') {
-      console.log(`${type} 200 OK \n${server} \n${date} \n${content_type} \nContent-Length: ${staticData.helium_html.length} \n${connection}`);
+      info = readFileData(uri);
+      console.log(`${type} 200 OK \n${server} \n${date} \n${content_type} \nContent-Length: ${info.length} \n${connection} \n\n${info}`);
     } else if (uri === '/hydrogen.html') {
-      console.log(`${type} 200 OK \n${server} \n${date} \n${content_type} \nContent-Length: ${staticData.hydrogen_html.length} \n${connection}`);
+      info = readFileData(uri);
+      console.log(`${type} 200 OK \n${server} \n${date} \n${content_type} \nContent-Length: ${info.length} \n${connection} \n\n${info}`);
     } else if (uri === '/styles.css') {
-      console.log(`${type} 200 OK \n${server} \n${date} \n${content_type} \nContent-Length: ${staticData.styles_css.length} \n${connection}`);
+      info = readFileData(uri);
+      console.log(`${type} 200 OK \n${server} \n${date} \n${content_type} \nContent-Length: ${info.length} \n${connection} \n\n${info}`);
     } else {
-      console.log(`${type} 404 NOT FOUND \n${server} \n${date} \n${content_type} \nContent-Length: ${staticData.error_html.length} \n${connection}`);
+      info = readFileData('/error.html');
+      console.log(`${type} 404 NOT FOUND \n${server} \n${date} \n${content_type} \nContent-Length: ${info.length} \n${connection} \n\n${info}`);
     }
   }
+}
+
+// file reader
+function readFileData(uri) {
+  let readableData = fs.readFileSync(`./source${uri}`, (err, data) => {
+    if (err) throw err;
+  });
+
+  // console.log(readableData.toString());
+  return readableData.toString();
 }
 
 // returns Method and URI as strings in an object
 function getRequestInfo(data) {
   let tempData = data.split('\r\n');
-  console.log('crazy', tempData);
+  // console.log('crazy', tempData);
   let connection = tempData[tempData.length-3];
   let methodLine = tempData[0];
   methodLine = methodLine.split(' ');
@@ -90,16 +113,18 @@ function getRequestInfo(data) {
   };
 }
 
-function formatData(data) {
-  let tempData = data.split('\r\n');
-  // console.log(tempData);
-  let header = 
-    `${tempData[0]}\n${tempData[5]}\nTime Stamp: ${timeStamp}\n${serverName}`;
-  console.log(header);
-  // time = moment(time).format('MMMM Do YYYY, h:mm:ss a');
-}
+
 
 ///// SCRATCH /////
+
+// function formatData(data) {
+//   let tempData = data.split('\r\n');
+//   // console.log(tempData);
+//   let header = 
+//     `${tempData[0]}\n${tempData[5]}\nTime Stamp: ${timeStamp}\n${serverName}`;
+//   console.log(header);
+//   // time = moment(time).format('MMMM Do YYYY, h:mm:ss a');
+// }
 
 // const server = http.createServer((request, response) => {
 //   // request = setEncoding('utf8');
