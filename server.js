@@ -7,6 +7,7 @@ console.log(sanity);
 // stuff required to run the stuff we want
 const net = require('net');
 const fs = require('fs');
+// const path = require('path');
 
 // set this stuff now so it's easier to use later
 const serverName = 'https://www.ihateNET.com';
@@ -57,13 +58,13 @@ function generateResponse(request, data) {
   // this is the error or bad link catch
   if (!files.hasOwnProperty(uri)) {
     fs.readFile(`./source/error.html`, (err, data) => {
-      console.log(`${serverName}${uri} 404 NOT FOUND \n${server} \n${date} \n${content_type} \nContent-Length: ${data.length} \n${connection} \n\n${data}`);        
+      process.stdout.write(`${serverName}${uri} 404 NOT FOUND \n${server} \n${date} \n${content_type} \nContent-Length: ${data.length} \n${connection} \n\n${data} \n`);        
     });
 
   } else { 
     fs.readFile(`./source${uri}`, (err, data) => {
       if (method === 'GET') {
-        console.log(`${serverName}${uri} 200 OK \n${server} \n${date} \n${content_type} \nContent-Length: ${data.length} \n${connection} \n\n${data}`);
+        process.stdout.write(`${serverName}${uri} 200 OK \n${server} \n${date} \n${content_type} \nContent-Length: ${data.length} \n${connection} \n\n${data} \n`);
       }
     });
   }
