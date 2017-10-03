@@ -57,13 +57,13 @@ function generateResponse(request, data) {
   // this is the error or bad link catch
   if (!files.hasOwnProperty(uri)) {
     fs.readFile(`./source/error.html`, (err, data) => {
-      console.log(`${serverName}${uri} 404 NOT FOUND \n${server} \n${date} \n${content_type} \nContent-Length: \n${connection} \n\n${data}`);        
+      console.log(`${serverName}${uri} 404 NOT FOUND \n${server} \n${date} \n${content_type} \nContent-Length: ${data.length} \n${connection} \n\n${data}`);        
     });
 
   } else { 
     fs.readFile(`./source${uri}`, (err, data) => {
       if (method === 'GET') {
-        console.log(`${serverName}${uri} 200 OK \n${server} \n${date} \n${content_type} \nContent-Length: \n${connection} \n\n${data}`);
+        console.log(`${serverName}${uri} 200 OK \n${server} \n${date} \n${content_type} \nContent-Length: ${data.length} \n${connection} \n\n${data}`);
       }
     });
   }
