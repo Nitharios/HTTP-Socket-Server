@@ -22,9 +22,8 @@ const server = net.createServer((request) => {
   console.log('2nd:', sanity);
 
   request.on('data', (data) => {
-    console.log('emitted:\n', data);
-    formatData(data);
-    getRequestInfo(data);
+    // console.log('emitted:\n', data);
+    generateResponse(data);
   });
 
   request.end();
@@ -50,10 +49,15 @@ function generateResponse(data) {
   let requestInfo = getRequestInfo(data);
   let method = requestInfo.method;
   let uri = requestInfo.uri;
+  let type = requestInfo.type;
+  let server = requestInfo.server;
+  let date = requestInfo.date;
+  let content_type = requestInfo.content_type;
+  let connection = requestInfo.connection;
 
   if (method === 'GET') {
-    if (uri === '/index.html') {
-
+    if (uri === '/' || uri === '/index.html') {
+      console.log(`${type} 200 OK \n${server} \n${date} \n${content_type} \n${connection}`);
     } else if (uri === '/helium.html') {
 
     } else if (uri === '/hydrogen.html') {
@@ -69,6 +73,8 @@ function generateResponse(data) {
 // returns Method and URI as strings in an object
 function getRequestInfo(data) {
   let tempData = data.split('\r\n');
+  console.log('crazy', tempData);
+  let connection = tempData[tempData.length-3];
   let methodLine = tempData[0];
   methodLine = methodLine.split(' ');
   let method = methodLine[0];
@@ -78,7 +84,11 @@ function getRequestInfo(data) {
   return {
     method : method,
     uri : uri,
-    type : type
+    type : type,
+    server : 'Server: nginx/1.4.6 (Ubuntu)',
+    date : timeStamp,
+    content_type : 'text/html; charset=utf-8',
+    connection : connection
   };
 }
 
