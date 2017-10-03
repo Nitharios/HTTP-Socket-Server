@@ -25,7 +25,7 @@ const server = net.createServer((request) => {
   request.setEncoding('utf8');
 
   request.on('data', (data) => {
-    console.log('server was pinged');
+    console.log('Client has connected!');
     generateResponse(request, data);
   });
   // async, runs more than once...
@@ -49,46 +49,50 @@ function generateResponse(request, data) {
   let requestInfo = getRequestInfo(data);
   let method = requestInfo.method;
   let uri = requestInfo.uri;
-  let type = requestInfo.type;
-  let server = requestInfo.server;
-  let date = requestInfo.date;
-  let content_type = requestInfo.content_type;
-  let connection = requestInfo.connection;
-  // file reader with information formatter inside ASYNC function
-  // this is the error or bad link catch
-  if (!files.hasOwnProperty(uri)) {
-    fs.readFile(`./source/error.html`, 'utf8', (err, data) => {
-      if (err) throw err;
-      if (method === 'GET') { 
-        request.write(`${type} 404 NOT FOUND \n${server} \n${date} \n${content_type} \nContent-Length: ${data.length} \n${connection} \n\n${data} \n`, (err) => {
-          if (err) throw err;
-          console.log('if');
-          request.end();
-        });
-      }     
-    });
 
-  } else { 
+  // file reader with information formatter inside ASYNC function
+  if (files.hasOwnProperty(uri)) {
     fs.readFile(`./source${uri}`, 'utf8', (err, data) => {
       if (err) throw err;
+
       if (method === 'GET' || method === 'HEAD') {
-        request.write(`${type} 200 OK\nServer: ${server}\nDate: ${date}\nContent-Type: ${content_type}\nContent-Length: ${data.length}\nConnection: ${connection}\n\n${data}`, (err) => {
+        request.write(formatInfo(requestInfo, uri, data, true), (err) => {
           if (err) throw err;
-          console.log('end');
+
           request.end();
         });
       }
     });
+
+  } else { 
+    fs.readFile(`./source/error.html`, 'utf8', (err, data) => {
+      if (err) throw err;
+
+      request.write(formatInfo(requestInfo, uri, data, false), (err) => {
+        if (err) throw err;
+
+        request.end();
+      });  
+    });
   }
-  // ends connection after information has been sent to client
+}
+
+// blah blah
+function formatInfo(info, uri, data, validRequest) {
+  let method = info.method;
+  let type = info.type;
+  let server = info.server;
+  let date = info.date;
+  let content_type = info.content_type;
+  let connection = info.connection;
+
+  if (validRequest) return `${type} 200 OK\nServer: ${server}\nDate: ${date}\nContent-Type: ${content_type}\nContent-Length: ${data.length}\nConnection: ${connection}\n\n${data}`;
+  else return `${type} 404 NOT FOUND \n${server} \n${date} \n${content_type} \nContent-Length: ${data.length} \n${connection} \n\n${data} \n`;
 }
 
 // returns Method and URI as strings in an object
 function getRequestInfo(data) {
   let tempData = data.split('\r\n');
-  console.log(tempData);
-  let connection = tempData[tempData.length-3];
-  console.log(connection);
   let methodLine = tempData[0].split(' ');
   let method = methodLine[0];
   let uri = methodLine[1];
