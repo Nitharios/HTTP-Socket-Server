@@ -11,6 +11,7 @@ let requestData = [];
 
 const net = require('net');
 const fs = require('fs');
+const staticData = require('./static-data');
 // const http = require('http');
 const serverName = 'https://www.ihateNET.com';
 const PORT = process.env.PORT || 8080;
@@ -46,7 +47,6 @@ function formatData(data) {
   // console.log(tempData);
   let header = 
     `${tempData[0]}\n${tempData[5]}\nTime Stamp: ${timeStamp}\n${serverName}`;
-
   console.log(header);
   // time = moment(time).format('MMMM Do YYYY, h:mm:ss a');
 }
@@ -67,5 +67,3 @@ function formatData(data) {
 // server.on('error', (err) => {
 //   throw err;
 // });
-
-
