@@ -3,18 +3,16 @@
 const sanity = "You're not crazy!";
 console.log('1st:', sanity);
 
-const timeStamp = new Date();
-
-let requestData = [];
-
 ///// ACTUAL CODE /////
 
 const net = require('net');
 const fs = require('fs');
-const staticData = require('./static-data');
-// const http = require('http');
+
 const serverName = 'https://www.ihateNET.com';
 const PORT = process.env.PORT || 8080;
+const timeStamp = new Date();
+
+let requestData = [];
 
 const server = net.createServer((request) => {
   request.setEncoding('utf8');
@@ -57,15 +55,15 @@ function generateResponse(data) {
 
   if (method === 'GET') {
     if (uri === '/' || uri === '/index.html') {
-      console.log(`${type} 200 OK \n${server} \n${date} \n${content_type} \n${connection}`);
+      console.log(`${type} 200 OK \n${server} \n${date} \n${content_type} \nContent-Length: ${staticData.index_html.length} \n${connection}`);
     } else if (uri === '/helium.html') {
-
+      console.log(`${type} 200 OK \n${server} \n${date} \n${content_type} \nContent-Length: ${staticData.helium_html.length} \n${connection}`);
     } else if (uri === '/hydrogen.html') {
-
+      console.log(`${type} 200 OK \n${server} \n${date} \n${content_type} \nContent-Length: ${staticData.hydrogen_html.length} \n${connection}`);
     } else if (uri === '/styles.css') {
-
+      console.log(`${type} 200 OK \n${server} \n${date} \n${content_type} \nContent-Length: ${staticData.styles_css.length} \n${connection}`);
     } else {
-
+      console.log(`${type} 404 NOT FOUND \n${server} \n${date} \n${content_type} \nContent-Length: ${staticData.error_html.length} \n${connection}`);
     }
   }
 }
