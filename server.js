@@ -10,24 +10,34 @@ const fs = require('fs');
 // const http = require('http');
 const PORT = process.env.PORT || 8080;
 
-const server = net.createServer((client) => {
-  client.setEncoding('utf8');
+const server = net.createServer((request) => {
+  request.setEncoding('utf8');
 
   console.log('2nd:', sanity);
 
-  client.on('data', (data) => {
+  // request.write(sanity);
+
+  request.on('data', (data) => {
     console.log('Client has emitted:\n' + data );
   });
 
-  client.end();
+  request.end();
 
-  client.on('end', () => {
+  // async, runs more than once...
+  request.on('end', () => {
     console.log('Client has disconnected');
   });
 });
 
+server.on('error', (err) => {
+  throw err;
+});
+
+server.listen(PORT, () => {
+  console.log(`Listening on port ${PORT}`);
+});
 // cojst server = http.createServer((request, response) => {
-//   // client = setEncoding('utf8');
+//   // request = setEncoding('utf8');
 //   // sent twice?? two requests??? ASYNC...
 //   console.log('Server: Someone has connected!');
 
@@ -41,11 +51,4 @@ const server = net.createServer((client) => {
 //   throw err;
 // });
 
-server.on('error', (err) => {
-  throw err;
-});
-
-server.listen(PORT, () => {
-  console.log(`Listening on port ${PORT}`);
-});
 
