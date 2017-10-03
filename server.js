@@ -15,7 +15,6 @@ const timeStamp = new Date();
 let requestData = [];
 let files = {
   index_html : '/index.html',
-  error_html : '/error.html',
   helium_html : '/helium.html',
   hydrogen_html : '/hydrogen.html',
   styles_css : '/styles.css'
@@ -49,7 +48,7 @@ server.listen(PORT, () => {
 
 ///// FUNCTIONS /////
 
-// the LONG ASS IF FUNCTION
+// will generate the response text
 function generateResponse(data) {
   let requestInfo = getRequestInfo(data);
   let method = requestInfo.method;
@@ -62,21 +61,14 @@ function generateResponse(data) {
   let info;
 
   if (method === 'GET') {
-    if (uri === '/' || uri === '/index.html') {
-      info = readFileData(uri);
-      console.log(`${type} 200 OK \n${server} \n${date} \n${content_type} \nContent-Length: ${info.length} \n${connection} \n\n${info}`);
-    } else if (uri === '/helium.html') {
-      info = readFileData(uri);
-      console.log(`${type} 200 OK \n${server} \n${date} \n${content_type} \nContent-Length: ${info.length} \n${connection} \n\n${info}`);
-    } else if (uri === '/hydrogen.html') {
-      info = readFileData(uri);
-      console.log(`${type} 200 OK \n${server} \n${date} \n${content_type} \nContent-Length: ${info.length} \n${connection} \n\n${info}`);
-    } else if (uri === '/styles.css') {
-      info = readFileData(uri);
-      console.log(`${type} 200 OK \n${server} \n${date} \n${content_type} \nContent-Length: ${info.length} \n${connection} \n\n${info}`);
-    } else {
+    for (let path in files) {
+      if (uri === files[path]) {
+        info = readFileData(uri);
+        console.log(`${type} 200 OK \n${server} \n${date} \n${content_type} \nContent-Length: ${info.length} \n${connection} \n\n${info}`);        
+      } else {
       info = readFileData('/error.html');
-      console.log(`${type} 404 NOT FOUND \n${server} \n${date} \n${content_type} \nContent-Length: ${info.length} \n${connection} \n\n${info}`);
+        console.log(`${type} 404 NOT FOUND \n${server} \n${date} \n${content_type} \nContent-Length: ${info.length} \n${connection} \n\n${info}`);        
+      }
     }
   }
 }
