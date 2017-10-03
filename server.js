@@ -25,6 +25,7 @@ const server = net.createServer((request) => {
   request.setEncoding('utf8');
 
   request.on('data', (data) => {
+    console.log('server was pinged');
     generateResponse(request, data);
   });
   // async, runs more than once...
@@ -53,24 +54,28 @@ function generateResponse(request, data) {
   let date = requestInfo.date;
   let content_type = requestInfo.content_type;
   let connection = requestInfo.connection;
-
   // file reader with information formatter inside ASYNC function
   // this is the error or bad link catch
   if (!files.hasOwnProperty(uri)) {
-    fs.readFile(`./source/error.html`, (err, data) => {
+    fs.readFile(`./source/error.html`, 'utf8', (err, data) => {
+      if (err) throw err;
       if (method === 'GET') { 
-        request.write(`${serverName}${uri} 404 NOT FOUND \n${server} \n${date} \n${content_type} \nContent-Length: ${data.length} \n${connection} \n\n${data} \n`, (err) => {
+        request.write(`${type} 404 NOT FOUND \n${server} \n${date} \n${content_type} \nContent-Length: ${data.length} \n${connection} \n\n${data} \n`, (err) => {
           if (err) throw err;
+          console.log('if');
           request.end();
         });
       }     
     });
 
   } else { 
-    fs.readFile(`./source${uri}`, (err, data) => {
+    fs.readFile(`./source${uri}`, 'utf8', (err, data) => {
+      if (err) throw err;
       if (method === 'GET') {
-        request.write(`${serverName}${uri} 200 OK \n${server} \n${date} \n${content_type} \nContent-Length: ${data.length} \n${connection} \n\n${data} \n`, (err) => {
+        console.log(`${type} 200 OK \n${server} \nDate: ${date} \nContent-Type: ${content_type} \nContent-Length: ${data.length} \n${connection} \n\n${data} \n`);
+        request.write(`${type} 200 OK \n${server} \nDate: ${date} \nContent-Type: ${content_type} \nContent-Length: ${data.length} \n${connection} \n\n${data} \n`, (err) => {
           if (err) throw err;
+          console.log('end');
           request.end();
         });
       }
@@ -82,6 +87,7 @@ function generateResponse(request, data) {
 // returns Method and URI as strings in an object
 function getRequestInfo(data) {
   let tempData = data.split('\r\n');
+  console.log(tempData);
   let connection = tempData[tempData.length-3];
   let methodLine = tempData[0].split(' ');
   let method = methodLine[0];
