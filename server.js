@@ -23,7 +23,7 @@ let files = {
 const server = net.createServer((request) => {
   request.setEncoding('utf8');
 
-  console.log('2nd:', sanity);
+  // console.log('2nd:', sanity);
 
   request.on('data', (data) => {
     // console.log('emitted:\n', data);
@@ -69,11 +69,11 @@ function generateResponse(data) {
 
         // });
         info = readFileData(uri);
-        return console.log(`${type} 200 OK \n${server} \n${date} \n${content_type} \nContent-Length: \n${connection} \n\n${info}`);
+        return console.log(`${serverName}${uri} 200 OK \n${server} \n${date} \n${content_type} \nContent-Length: \n${connection} \n\n${info}`);
 
       } else {
         info = readFileData('/error.html');
-        return console.log(`${type} 404 NOT FOUND \n${server} \n${date} \n${content_type} \nContent-Length: \n${connection} \n\n${info}`);        
+        return console.log(`${serverName}${uri} 404 NOT FOUND \n${server} \n${date} \n${content_type} \nContent-Length: \n${connection} \n\n${info}`);        
       }
     }
   }
