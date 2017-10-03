@@ -7,6 +7,7 @@ const PORT = process.env.PORT || 8080;
 
 const request = new net.connect(PORT, () => {
   console.log(`Connected to server at port ${PORT}`);
+  console.log(process.argv);
 
   process.stdin.pipe(request);
 
