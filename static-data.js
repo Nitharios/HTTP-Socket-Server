@@ -1,54 +1,6 @@
 // jshint esversion:6
 
-module.exports.error_html = `<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Element not found!</title>
-  <link rel="stylesheet" href="/css/styles.css">
-</head>
-<body>
-  <h1>404</h1>
-  <h2>Element not found!</h2>
-  <p>
-    <a href="/">back</a>
-  </p>
-</body>
-</html>`;
-
-module.exports.helium_html = `<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>The Elements - Helium</title>
-  <link rel="stylesheet" href="/css/styles.css">
-</head>
-<body>
-  <h1>Helium</h1>
-  <h2>H</h2>
-  <h3>Atomic number 2</h3>
-  <p>Helium is a chemical element with symbol He and atomic number 2. It is a colorless, odorless, tasteless, non-toxic, inert, monatomic gas that heads the noble gas group in the periodic table. Its boiling and melting points are the lowest among all the elements and it exists only as a gas except in extremely cold conditions.</p>
-  <p><a href="/">back</a></p>
-</body>
-</html>`;
-
-module.exports.hydrogen_html = `<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>The Elements - Hydrogen</title>
-  <link rel="stylesheet" href="/css/styles.css">
-</head>
-<body>
-  <h1>Hydrogen</h1>
-  <h2>H</h2>
-  <h3>Atomic number 1</h3>
-  <p>Hydrogen is a chemical element with chemical symbol H and atomic number 1. With an atomic weight of 1.00794 u, hydrogen is the lightest element on the periodic table. Its monatomic form (H) is the most abundant chemical substance in the universe, constituting roughly 75% of all baryonic mass. Non-remnant stars are mainly composed of hydrogen in its plasma state. The most common isotope of hydrogen, termed protium (name rarely used, symbol 1H), has a single proton and zero neutrons.</p>
-  <p><a href="/">back</a></p>
-</body>
-</html>`;
-
-module.exports.index_html = `<!DOCTYPE html>
+const index_html = `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -70,7 +22,55 @@ module.exports.index_html = `<!DOCTYPE html>
 </body>
 </html>`;
 
-module.exports.styles_css = `@import url(http://fonts.googleapis.com/css?family=Open+Sans|Roboto+Slab);
+const error_html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Element not found!</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <h1>404</h1>
+  <h2>Element not found!</h2>
+  <p>
+    <a href="/">back</a>
+  </p>
+</body>
+</html>`;
+
+const helium_html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>The Elements - Helium</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <h1>Helium</h1>
+  <h2>H</h2>
+  <h3>Atomic number 2</h3>
+  <p>Helium is a chemical element with symbol He and atomic number 2. It is a colorless, odorless, tasteless, non-toxic, inert, monatomic gas that heads the noble gas group in the periodic table. Its boiling and melting points are the lowest among all the elements and it exists only as a gas except in extremely cold conditions.</p>
+  <p><a href="/">back</a></p>
+</body>
+</html>`;
+
+const hydrogen_html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>The Elements - Hydrogen</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <h1>Hydrogen</h1>
+  <h2>H</h2>
+  <h3>Atomic number 1</h3>
+  <p>Hydrogen is a chemical element with chemical symbol H and atomic number 1. With an atomic weight of 1.00794 u, hydrogen is the lightest element on the periodic table. Its monatomic form (H) is the most abundant chemical substance in the universe, constituting roughly 75% of all baryonic mass. Non-remnant stars are mainly composed of hydrogen in its plasma state. The most common isotope of hydrogen, termed protium (name rarely used, symbol 1H), has a single proton and zero neutrons.</p>
+  <p><a href="/">back</a></p>
+</body>
+</html>`;
+
+const styles_css = `@import url(http://fonts.googleapis.com/css?family=Open+Sans|Roboto+Slab);
 
 /* http://meyerweb.com/eric/tools/css/reset/ 
    v2.0 | 20110126
@@ -180,3 +180,9 @@ a:hover{
   color: #C6C5AC;
   border-bottom: 1px dashed #C6C5AC;
 }`;
+
+module.exports = index_html;
+module.exports = error_html;
+module.exports = helium_html;
+module.exports = hydrogen_html;
+module.exports = styles_css;
