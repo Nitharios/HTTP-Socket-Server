@@ -2,11 +2,13 @@
 let sanity = "You're not crazy!";
 console.log(sanity);
 
+console.log('process', process.argv);
+
 const net = require('net');
 const IP = process.env.IP || 'localhost';
-console.log('IP', IP);
-const PORT = process.env.PORT || 8080;
-const userAgent = 'nathan/1.1';
+// console.log('IP', IP);
+const PORT = process.env.PORT || 80;
+const userAgent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36';
 const accept = 'text/html, application/json';
 const connection = 'keep-alive';
 
@@ -21,7 +23,7 @@ let commandLineInput = process.argv;
 
 commandHandler(commandLineInput);
 
-const request = new net.connect({port: PORT, host: IP}, () => {
+const request = new net.connect({port: PORT, host: host}, () => {
   console.log(`Connected to server at port ${PORT}`);
   // console.log('process', process.argv);
 
@@ -45,6 +47,7 @@ request.on('end', () => {
 request.on('data', (data) => {
   // console.log(data.toString());
   let serverReply = data.toString();
+  console.log('here', serverReply);
   if (method === 'GET') serverReply = serverReply.slice(serverReply.indexOf('\n\n')+1, serverReply.length-1).trim();
   process.stdin.write(serverReply);
   request.end();
@@ -58,13 +61,13 @@ function commandHandler(input) {
   // first index should be access file
   // second index COULD be a flag or link
   // third index COULD be a link or null
-  console.log('input', input);
+  // console.log('input', input);
   if (input[2] === '-I') {
       method = 'HEAD';
       
       if (input[3].toLowerCase().includes('www') || input[2].toLowerCase().includes('localhost')) {
         host = input[3].split('/')[0];
-        console.log(host);
+        // console.log(host);
         uri = input[3].split('/')[1] || '';
       }
 
@@ -82,7 +85,13 @@ function commandHandler(input) {
 
 // generates the Request Header
 function generateRequest(request, method) {
-  request.write(`${method} /${uri} HTTP/1.1\nHost: ${host}:${PORT}\nConnection: ${connection}\nUser-Agent: ${userAgent}\nAccept: ${accept}`, (err) => {
+  let requestHeader = `${method} /${uri} HTTP/1.1
+Host: ${host}:${PORT}
+Connection: ${connection}
+User-Agent: ${userAgent}
+Accept: ${accept}\n\n`;
+
+  request.write(requestHeader, (err) => {
     if (err) throw err;
   });
 }
