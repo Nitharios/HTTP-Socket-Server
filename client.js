@@ -17,11 +17,10 @@ const request = new net.connect(PORT, () => {
 
   // will send the request to the server
   commandHandler(commandLineInput);
-  generateRequest(request);
+  generateRequest(request, method);
 
   process.stdin.pipe(request);
   request.pipe(process.stdout);
-
 });
 
 request.on('error', (err) => {
@@ -29,7 +28,7 @@ request.on('error', (err) => {
 });
 
 request.on('end', () => {
-  console.log('\nDisconnected from server');
+  console.log('Disconnected from server');
 });
 
 /* FUNCTIONS */
@@ -45,6 +44,7 @@ function commandHandler(input) {
       
       if (input[3].toLowerCase().includes('www')) {
         url = input[3].split('/')[0];
+        console.log(url);
         uri = input[3].split('/')[1];
       }
 
@@ -55,13 +55,10 @@ function commandHandler(input) {
   } 
 }
 
-
 // generates the Request Header
 function generateRequest(request, method) {
   request.write(`${method} /${uri} HTTP/1.1\nDate:${timeStamp}\nHost:${url}:${PORT}\nUser-Agent: ${userAgent}\nAccept:*/*`, (err) => {
     if (err) throw err;
-
-    request.end();
   });
 }
 
@@ -70,5 +67,6 @@ function generateRequest(request, method) {
 
 // reads in data sent from server
 request.on('data', (data) => {
+  console.log('here');
   request.end();
 });
