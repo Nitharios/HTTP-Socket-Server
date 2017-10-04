@@ -26,6 +26,7 @@ const server = net.createServer((request) => {
 
   request.on('data', (data) => {
     console.log('Client has connected!');
+    // console.log(data);
     generateResponse(request, data);
   });
   // async, runs more than once...
@@ -86,8 +87,13 @@ function formatInfo(info, uri, data, validRequest) {
   let content_type = info.content_type;
   let connection = info.connection;
 
-  if (validRequest) return `${type} 200 OK\nServer: ${server}\nDate: ${date}\nContent-Type: ${content_type}\nContent-Length: ${data.length}\nConnection: ${connection}\n\n${data}`;
-  else return `${type} 404 NOT FOUND \n${server} \n${date} \n${content_type} \nContent-Length: ${data.length} \n${connection} \n\n${data} \n`;
+  if (validRequest) {
+   
+   if (method === 'HEAD') return `${type} 200 OK\nServer: ${server}\nDate: ${timeStamp}\nContent-Type: ${content_type}\nContent-Length: ${data.length}\nConnection: ${connection}`;
+
+   else if (method === 'GET') return `${data}`;
+  
+  } else return `${type} 404 NOT FOUND\nServer: ${server}\nDate: ${timeStamp}\nContent-Type: ${content_type}\nContent-Length: ${data.length}\nConnection: ${connection}\n\n${data}`;
 }
 
 // returns Method and URI as strings in an object
