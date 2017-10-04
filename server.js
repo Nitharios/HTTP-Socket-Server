@@ -26,7 +26,7 @@ const server = net.createServer((request) => {
 
   request.on('data', (data) => {
     console.log('Client has connected!');
-    // console.log(data);
+    console.log('request:', data);
     generateResponse(request, data);
   });
   // async, runs more than once...
@@ -57,7 +57,8 @@ function generateResponse(request, data) {
       if (err) throw err;
 
       if (method === 'GET' || method === 'HEAD') {
-        request.write(formatInfo(requestInfo, uri, data, true), (err) => {
+
+        request.write(formatInfo(requestInfo, data, true), (err) => {
           if (err) throw err;
 
           request.end();
@@ -69,7 +70,7 @@ function generateResponse(request, data) {
     fs.readFile(`./source/error.html`, 'utf8', (err, data) => {
       if (err) throw err;
 
-      request.write(formatInfo(requestInfo, uri, data, false), (err) => {
+      request.write(formatInfo(requestInfo, data, false), (err) => {
         if (err) throw err;
 
         request.end();
@@ -79,8 +80,9 @@ function generateResponse(request, data) {
 }
 
 // blah blah
-function formatInfo(info, uri, data, validRequest) {
+function formatInfo(info, data, validRequest) {
   let method = info.method;
+  let uri = info.uri;
   let type = info.type;
   let server = info.server;
   let date = info.date;
@@ -88,11 +90,11 @@ function formatInfo(info, uri, data, validRequest) {
   let connection = info.connection;
 
   if (validRequest) {
-   
-   if (method === 'HEAD') return `${type} 200 OK\nServer: ${server}\nDate: ${timeStamp}\nContent-Type: ${content_type}\nContent-Length: ${data.length}\nConnection: ${connection}\n\n${data}`;
 
-   else if (method === 'GET') return `${type} 200 OK\nServer: ${server}\nDate: ${timeStamp}\nContent-Type: ${content_type}\nContent-Length: ${data.length}\nConnection: ${connection}\n\n${data}`;
-  
+    if (method === 'GET') return `${type} 200 OK\nServer: ${server}\nDate: ${timeStamp}\nContent-Type: ${content_type}\nContent-Length: ${data.length}\nConnection: ${connection}\n\n${data}`;
+
+    else if (method === 'HEAD') return `${type} 200 OK\nServer: ${server}\nDate: ${timeStamp}\nContent-Type: ${content_type}\nContent-Length: ${data.length}\nConnection: ${connection}\n\n`;
+
   } else return `${type} 404 NOT FOUND\nServer: ${server}\nDate: ${timeStamp}\nContent-Type: ${content_type}\nContent-Length: ${data.length}\nConnection: ${connection}\n\n${data}`;
 }
 
@@ -104,7 +106,7 @@ function getRequestInfo(data) {
   let uri = methodLine[1];
   let type = methodLine[2];
 
-  // handles any pesky links ending with 'l'
+  // handles any pesky links ending with '/'
   if (uri === '/') uri = '/index.html';
   else if (uri[uri.length-1] === '/') uri = uri.slice(0, (uri.length-1));
 
