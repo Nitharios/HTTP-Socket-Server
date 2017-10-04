@@ -2,12 +2,12 @@
 let sanity = "You're not crazy!";
 console.log(sanity);
 
-console.log('process', process.argv);
+/* ACTUAL CODE */
 
 const net = require('net');
 const IP = process.env.IP || 'localhost';
 // console.log('IP', IP);
-const PORT = process.env.PORT || 80;
+const PORT = process.env.PORT || 8080;
 const userAgent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36';
 const accept = 'text/html, application/json';
 const connection = 'keep-alive';
@@ -47,7 +47,6 @@ request.on('end', () => {
 request.on('data', (data) => {
   // console.log(data.toString());
   let serverReply = data.toString();
-  console.log('here', serverReply);
   if (method === 'GET') serverReply = serverReply.slice(serverReply.indexOf('\n\n')+1, serverReply.length-1).trim();
   process.stdin.write(serverReply);
   request.end();
@@ -65,13 +64,14 @@ function commandHandler(input) {
   if (input[2] === '-I') {
       method = 'HEAD';
       
-      if (input[3].toLowerCase().includes('www') || input[2].toLowerCase().includes('localhost')) {
+      if (input[3].toLowerCase().includes('www') || input[3].toLowerCase().includes('localhost')) {
         host = input[3].split('/')[0];
         // console.log(host);
         uri = input[3].split('/')[1] || '';
       }
 
   } else if (input[2].toLowerCase().includes('www') || input[2].toLowerCase().includes('localhost')) {
+    console.log('here');
     method = 'GET';
     host = input[2].split('/')[0] || input[2];
     // console.log('host', host);
@@ -89,7 +89,9 @@ function generateRequest(request, method) {
 Host: ${host}:${PORT}
 Connection: ${connection}
 User-Agent: ${userAgent}
-Accept: ${accept}\n\n`;
+Accept: ${accept}
+
+`;
 
   request.write(requestHeader, (err) => {
     if (err) throw err;
