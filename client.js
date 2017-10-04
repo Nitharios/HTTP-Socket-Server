@@ -6,6 +6,7 @@ const net = require('net');
 const PORT = process.env.PORT || 8080;
 const userAgent = 'nathan/1.1';
 const method = 'GET';
+const timeStamp = new Date();
 
 let url = process.argv[2].split('/')[0];
 let uri = process.argv[2].split('/')[1];
@@ -34,7 +35,7 @@ request.on('end', () => {
 
 // generates the Request Header
 function generateRequest(request) {
-  request.write(`${method} /${uri} HTTP/1.1\nHost:${url}:${PORT}\nUser-Agent: ${userAgent}\nAccept:*/*`);
+  request.write(`${method} /${uri} HTTP/1.1\nDate:${timeStamp}\nHost:${url}:${PORT}\nUser-Agent: ${userAgent}\nAccept:*/*`);
 }
 
 // generates the Request Body
