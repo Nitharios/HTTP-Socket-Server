@@ -51,6 +51,8 @@ request.on('data', (data) => {
     .trim();
   }
 
+  if (data.includes('302')) console.log (sanity);
+
   process.stdin.write(serverReply);
   request.end();
 });
