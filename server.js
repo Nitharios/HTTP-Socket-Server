@@ -105,18 +105,23 @@ function getRequestInfo(data) {
   let method = methodLine[0];
   let uri = methodLine[1];
   let type = methodLine[2];
+  let content_type;
+  console.log('ALKHFD:LKDHSJF:LKDSHFD:KJH', type);
 
   // handles any pesky links ending with '/'
   if (uri === '/') uri = '/index.html';
   else if (uri[uri.length-1] === '/') uri = uri.slice(0, (uri.length-1));
 
+  if (uri.includes('html')) content_type = 'text/html; charset=utf-8';
+  else if (uri.includes('css')) content_type = 'text/css; charset=utf-8';
+
   return {
     method : method,
     uri : uri,
     type : type,
-    server : 'nginx/1.4.6 (Ubuntu)',
+    server : 'Mozilla 5.0',
     date : timeStamp,
-    content_type : 'text/html; charset=utf-8',
+    content_type : content_type,
     connection : 'keep-alive'
   };
 }
