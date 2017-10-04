@@ -48,6 +48,7 @@ function commandHandler(input) {
   // first index should be access file
   // second index COULD be a flag or link
   // third index COULD be a link or null
+  
   if (input[2] === '-I') {
       method = 'HEAD';
       
@@ -61,6 +62,9 @@ function commandHandler(input) {
     method = 'GET';
     url = input[2].split('/')[0];
     uri = input[2].split('/')[1];
+  
+  } else {
+    method = 'GET';
   } 
 }
 
