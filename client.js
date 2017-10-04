@@ -8,14 +8,15 @@ const userAgent = 'nathan/1.1';
 const method = 'GET';
 const timeStamp = new Date();
 
-let url = process.argv[2].split('/')[0];
-let uri = process.argv[2].split('/')[1];
+let commandLineInput = process.argv;
+let url, uri, flag;
 
 const request = new net.connect(PORT, () => {
   console.log(`Connected to server at port ${PORT}`);
   console.log('process', process.argv);
 
   // will send the request to the server
+  commandHandler(commandLineInput);
   generateRequest(request);
 
   process.stdin.pipe(request);
@@ -32,6 +33,15 @@ request.on('end', () => {
 });
 
 /* FUNCTIONS */
+
+// deals with command line input
+function commandHandler(input) {
+  // first input should be node directory
+  // second input should be the file to access
+  // third input COULD be a flag or link
+  // fourth input COULD be a link or null
+}
+
 
 // generates the Request Header
 function generateRequest(request) {
