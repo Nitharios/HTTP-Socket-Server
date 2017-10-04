@@ -19,8 +19,8 @@ const request = new net.connect(PORT, () => {
   commandHandler(commandLineInput);
   generateRequest(request, method);
 
-  process.stdin.pipe(request);
-  request.pipe(process.stdout);
+  // process.stdin.pipe(request);
+  // request.pipe(process.stdout);
 });
 
 request.on('error', (err) => {
@@ -29,6 +29,15 @@ request.on('error', (err) => {
 
 request.on('end', () => {
   console.log('Disconnected from server');
+});
+
+// reads in data sent from server
+request.on('data', (data) => {
+  // console.log(data.toString());
+  let serverReply = data.toString();
+  if (method === 'GET') serverReply = serverReply.slice(serverReply.indexOf('\n\n')+1, serverReply.length-1).trim();
+  process.stdin.write(serverReply);
+  request.end();
 });
 
 /* FUNCTIONS */
@@ -63,10 +72,3 @@ function generateRequest(request, method) {
 }
 
 // generates the Request Body
-
-
-// reads in data sent from server
-request.on('data', (data) => {
-  console.log('here');
-  request.end();
-});
