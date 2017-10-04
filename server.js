@@ -53,12 +53,12 @@ function generateResponse(request, data) {
 
   // file reader with information formatter inside ASYNC function
   if (files.hasOwnProperty(uri)) {
-    fs.readFile(`./source${uri}`, 'utf8', (err, data) => {
+    fs.readFile(`./source${uri}`, 'utf8', (err, information) => {
       if (err) throw err;
 
       if (method === 'GET' || method === 'HEAD') {
 
-        request.write(formatInfo(requestInfo, data, true), (err) => {
+        request.write(convertInfo(requestInfo, information, true), (err) => {
           if (err) throw err;
 
           request.end();
@@ -67,10 +67,10 @@ function generateResponse(request, data) {
     });
 
   } else { 
-    fs.readFile(`./source/error.html`, 'utf8', (err, data) => {
+    fs.readFile(`./source/error.html`, 'utf8', (err, information) => {
       if (err) throw err;
 
-      request.write(formatInfo(requestInfo, data, false), (err) => {
+      request.write(convertInfo(requestInfo, information, false), (err) => {
         if (err) throw err;
 
         request.end();
@@ -80,7 +80,7 @@ function generateResponse(request, data) {
 }
 
 // blah blah
-function formatInfo(info, data, validRequest) {
+function convertInfo(info, data, validRequest) {
   let method = info.method;
   let uri = info.uri;
   let type = info.type;
@@ -91,11 +91,11 @@ function formatInfo(info, data, validRequest) {
 
   if (validRequest) {
 
-    if (method === 'GET') return `${type} 200 OK\nServer: ${server}\nDate: ${timeStamp}\nContent-Type: ${content_type}\nContent-Length: ${data.length}\nConnection: ${connection}\n\n${data}`;
+    if (method === 'GET') return `${type} 200 OK\nServer: ${server}\nDate: ${date}\nContent-Type: ${content_type}\nContent-Length: ${data.length}\nConnection: ${connection}\n\n${data}`;
 
-    else if (method === 'HEAD') return `${type} 200 OK\nServer: ${server}\nDate: ${timeStamp}\nContent-Type: ${content_type}\nContent-Length: ${data.length}\nConnection: ${connection}\n\n`;
+    else if (method === 'HEAD') return `${type} 200 OK\nServer: ${server}\nDate: ${date}\nContent-Type: ${content_type}\nContent-Length: ${data.length}\nConnection: ${connection}\n\n`;
 
-  } else return `${type} 404 NOT FOUND\nServer: ${server}\nDate: ${timeStamp}\nContent-Type: ${content_type}\nContent-Length: ${data.length}\nConnection: ${connection}\n\n${data}`;
+  } else return `${type} 404 NOT FOUND\nServer: ${server}\nDate: ${date}\nContent-Type: ${content_type}\nContent-Length: ${data.length}\nConnection: ${connection}\n\n${data}`;
 }
 
 // returns Method and URI as strings in an object
@@ -106,7 +106,6 @@ function getRequestInfo(data) {
   let uri = methodLine[1];
   let type = methodLine[2];
   let content_type;
-  console.log('ALKHFD:LKDHSJF:LKDSHFD:KJH', type);
 
   // handles any pesky links ending with '/'
   if (uri === '/') uri = '/index.html';
