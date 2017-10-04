@@ -7,6 +7,11 @@ const PORT = process.env.PORT || 8080;
 const userAgent = 'nathan/1.1';
 const timeStamp = new Date();
 
+const howTo = `\nHELP\n
+  node [fileName] [,option] [path]\n\nOPTIONS\n
+  -I fetch header
+        Returns the header of the requested path; if left out, the body of path will be returned\n\n`;
+
 // returns an array
 let commandLineInput = process.argv;
 let url, uri, flag, method;
@@ -65,6 +70,7 @@ function commandHandler(input) {
   
   } else {
     method = 'GET';
+    process.stdin.write(howTo);
   } 
 }
 
