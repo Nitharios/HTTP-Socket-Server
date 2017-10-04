@@ -89,13 +89,25 @@ function convertInfo(info, data, validRequest) {
   let content_type = info.content_type;
   let connection = info.connection;
 
+  let responseString = `Server: ${server}
+Date: ${date}
+Content-Type: ${content_type}
+Content-Length: ${data.length}
+Connection: ${connection}
+`;
+
   if (validRequest) {
 
-    if (method === 'GET') return `${type} 200 OK\nServer: ${server}\nDate: ${date}\nContent-Type: ${content_type}\nContent-Length: ${data.length}\nConnection: ${connection}\n\n${data}`;
+    if (method === 'GET') return `${type} 200 OK
+${responseString}
+${data}`;
 
-    else if (method === 'HEAD') return `${type} 200 OK\nServer: ${server}\nDate: ${date}\nContent-Type: ${content_type}\nContent-Length: ${data.length}\nConnection: ${connection}\n\n`;
+    else if (method === 'HEAD') return `${type} 200 OK
+${responseString}`;
 
-  } else return `${type} 404 NOT FOUND\nServer: ${server}\nDate: ${date}\nContent-Type: ${content_type}\nContent-Length: ${data.length}\nConnection: ${connection}\n\n${data}`;
+  } else return `${type} 404 NOT FOUND
+${responseString}
+${data}`;
 }
 
 // returns Method and URI as strings in an object
