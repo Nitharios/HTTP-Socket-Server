@@ -119,7 +119,7 @@ function getRequestInfo(data) {
     method : method,
     uri : uri,
     type : type,
-    server : 'Mozilla 5.0',
+    server : 'Mozilla/5.0 (Macintosh; Intel Mac OSX)',
     date : timeStamp,
     content_type : content_type,
     connection : 'keep-alive'
