@@ -89,9 +89,9 @@ function formatInfo(info, uri, data, validRequest) {
 
   if (validRequest) {
    
-   if (method === 'HEAD') return `${type} 200 OK\nServer: ${server}\nDate: ${timeStamp}\nContent-Type: ${content_type}\nContent-Length: ${data.length}\nConnection: ${connection}`;
+   if (method === 'HEAD') return `${type} 200 OK\nServer: ${server}\nDate: ${timeStamp}\nContent-Type: ${content_type}\nContent-Length: ${data.length}\nConnection: ${connection}\n\n${data}`;
 
-   else if (method === 'GET') return `${data}`;
+   else if (method === 'GET') return `${type} 200 OK\nServer: ${server}\nDate: ${timeStamp}\nContent-Type: ${content_type}\nContent-Length: ${data.length}\nConnection: ${connection}\n\n${data}`;
   
   } else return `${type} 404 NOT FOUND\nServer: ${server}\nDate: ${timeStamp}\nContent-Type: ${content_type}\nContent-Length: ${data.length}\nConnection: ${connection}\n\n${data}`;
 }
