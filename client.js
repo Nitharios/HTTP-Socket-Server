@@ -33,7 +33,7 @@ request.on('error', (err) => {
 });
 
 request.on('end', () => {
-  console.log('Disconnected from server');
+  console.log('\nDisconnected from server');
 });
 
 // reads in data sent from server
@@ -57,16 +57,16 @@ function commandHandler(input) {
   if (input[2] === '-I') {
       method = 'HEAD';
       
-      if (input[3].toLowerCase().includes('www')) {
+      if (input[3].toLowerCase().includes('www') || input[2].toLowerCase().includes('localhost')) {
         url = input[3].split('/')[0];
         console.log(url);
-        uri = input[3].split('/')[1];
+        uri = input[3].split('/')[1] || '';
       }
 
-  } else if (input[2].toLowerCase().includes('www')) {
+  } else if (input[2].toLowerCase().includes('www') || input[2].toLowerCase().includes('localhost')) {
     method = 'GET';
-    url = input[2].split('/')[0];
-    uri = input[2].split('/')[1];
+    url = input[2].split('/')[0] || input[2];
+    uri = input[2].split('/')[1] || '';
   
   } else {
     method = 'GET';
@@ -76,7 +76,7 @@ function commandHandler(input) {
 
 // generates the Request Header
 function generateRequest(request, method) {
-  request.write(`${method} /${uri} HTTP/1.1\nDate:${timeStamp}\nHost:${url}:${PORT}\nUser-Agent: ${userAgent}\nAccept:*/*`, (err) => {
+  request.write(`${method} /${uri} HTTP/1.1\nDate:${timeStamp}\nHost:${url}:${PORT}\nUser-Agent: ${userAgent}\nAccept: */*`, (err) => {
     if (err) throw err;
   });
 }
