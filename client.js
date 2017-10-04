@@ -8,6 +8,7 @@ const userAgent = 'nathan/1.1';
 const method = 'GET';
 const timeStamp = new Date();
 
+// returns an array
 let commandLineInput = process.argv;
 let url, uri, flag;
 
@@ -16,7 +17,7 @@ const request = new net.connect(PORT, () => {
   console.log('process', process.argv);
 
   // will send the request to the server
-  commandHandler(commandLineInput);
+  // commandHandler(commandLineInput);
   generateRequest(request);
 
   process.stdin.pipe(request);
