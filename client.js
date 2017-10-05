@@ -109,6 +109,7 @@ function setPort(current, index) {
 
 // generates the Request Header
 function generateRequest(request, method) {
+
   let requestHeader = `${method} /${uri} ${http}
 Host: ${host}:${PORT}
 Connection: ${connection}
@@ -117,9 +118,15 @@ Accept: ${accept}
 
 `;
 
-  request.write(requestHeader, (err) => {
+  if (requestHeader.includes('undefined')) {
+    generateErrorMessage(400);
+    request.end();
+
+  } else { 
+    request.write(requestHeader, (err) => {
     if (err) throw err;
-  });
+    });
+  }
 }
 
 // generates the Request Body
