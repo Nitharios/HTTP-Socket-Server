@@ -15,21 +15,10 @@ const howTo = `\nHELP\n
   -I fetch header
         Returns the header of the requested path; if left out, the body of path will be returned\n\n`;
 
-
 // returns an array
 let host, uri, flag, method;
-let PORT = process.env.PORT || 8080;
+let PORT = process.env.PORT || 80;
 let commandLineInput = process.argv;
-
-const statusHandlers = {
-  400 : `ERROR 400 Bad Request`,
-  404 : `ERROR 404 ${host} cannot be reached!`,
-  414 : `ERROR 414 ${host}/${uri} has exceeded the character limit`,
-  418 : `I'm a teapot!`,
-  500 : `ERROR 500 Internal Service Error`,
-  504 : `ERROR 504 Network connection has timed out`,
-  505 : `ERROR 505 HTTP version is not supported`
-};
 
 commandHandler(commandLineInput);
 
@@ -44,8 +33,7 @@ const request = new net.connect({port: PORT, host: host}, () => {
 });
 
 request.on('error', (err) => {
-  process.stdout.write();
-  request.end();
+  throw err;
 });
 
 request.on('end', () => {
