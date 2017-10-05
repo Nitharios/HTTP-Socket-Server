@@ -33,7 +33,7 @@ const request = new net.connect({port: PORT, host: host}, () => {
 });
 
 request.on('error', (err) => {
-  errorGenerator(404);
+  generateErrorMessage(500);
   throw err;
 });
 
@@ -92,6 +92,12 @@ function commandHandler(input) {
   } 
 }
 
+// sets a timeout to end the connection after 5 seconds
+setTimeout(function() {
+  generateErrorMessage(504);
+  request.end();
+}, 5000);
+
 // Sets the port if the user defines one
 function setPort(current, index) {
   if (current.includes(':')) {
@@ -118,7 +124,7 @@ Accept: ${accept}
 // generates the Request Body
 
 // generates error codes
-function errorGenerator(errorCode) {
+function generateErrorMessage(errorCode) {
 
   let statusHandlers = {
     '400' : `ERROR 400 Bad Request\n`,
@@ -130,7 +136,6 @@ function errorGenerator(errorCode) {
     '505' : `ERROR 505 HTTP version is not supported\n`
   };
 
-  console.log('here');
   if (statusHandlers.hasOwnProperty(errorCode)) process.stdout.write(statusHandlers[errorCode]);
   else process.stdout.write('Unknown Error shrugs.jpeg\n');
 }
