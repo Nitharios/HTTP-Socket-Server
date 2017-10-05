@@ -18,7 +18,7 @@ const howTo = `\nHELP\n
 // returns an array
 let host, uri, flag, method;
 let http = 'HTTP/1.1';
-let PORT = process.env.PORT || 80;
+let PORT = process.env.PORT || 8080;
 let commandLineInput = process.argv;
 
 commandHandler(commandLineInput);
@@ -34,8 +34,9 @@ const request = new net.connect({port: PORT, host: host}, () => {
 });
 
 request.on('error', (err) => {
+  // handle the case where the HTTP response results in a sever error
   generateErrorMessage(500);
-  throw err;
+  request.end();
 });
 
 request.on('end', () => {
@@ -46,14 +47,26 @@ request.on('end', () => {
 request.on('data', (data) => {
   let serverReply = data.toString();
 
-  if (method === 'GET') {
+  if (!serverReply.toLowerCase().includes('content-type: text/html; charset=utf-8') ||
+    !serverReply.toLowerCase().includes('<html')) {
+    console.log('here');
+    generateErrorMessage(500);
+    request.end();
+  
+  } else if (method === 'GET') {
     serverReply = serverReply
     .slice(serverReply
     .indexOf('\n\n')+1, serverReply.length-1)
     .trim();
+  
+  } else {
+    // sets a timeout to end the connection after 2 seconds
+    // handles the case where the host cannot be reached
+    setTimeout(function() {
+      generateErrorMessage(504);
+      request.end();
+    }, 2000);
   }
-
-  if (data.includes('302')) console.log (sanity);
 
   process.stdin.write(serverReply);
   request.end();
@@ -85,19 +98,12 @@ function commandHandler(input) {
     method = 'GET';
     host = input[2].split('/')[0] || input[2];
     uri = input[2].split('/')[1] || '';
-    console.log(host);
 
   } else {
     method = 'GET';
     process.stdin.write(howTo);
   } 
 }
-
-// sets a timeout to end the connection after 5 seconds
-setTimeout(function() {
-  generateErrorMessage(504);
-  request.end();
-}, 5000);
 
 // Sets the port if the user defines one
 function setPort(current, index) {
@@ -109,7 +115,6 @@ function setPort(current, index) {
 
 // generates the Request Header
 function generateRequest(request, method) {
-
   let requestHeader = `${method} /${uri} ${http}
 Host: ${host}:${PORT}
 Connection: ${connection}
@@ -119,6 +124,7 @@ Accept: ${accept}
 `;
 
   if (requestHeader.includes('undefined')) {
+    // handles the case where the HTTP request is a client error
     generateErrorMessage(400);
     request.end();
 
@@ -131,7 +137,7 @@ Accept: ${accept}
 
 // generates the Request Body
 
-// generates error codes
+// generates error codes and responses
 function generateErrorMessage(errorCode) {
   let statusHandlers = {
     '400' : `\nERROR 400 Bad Request\n`,
