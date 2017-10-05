@@ -18,7 +18,7 @@ const howTo = `\nHELP\n
 // returns an array
 let host, uri, flag, method;
 let http = 'HTTP/1.1';
-let PORT = process.env.PORT || 8080;
+let PORT = process.env.PORT || 8888;
 let commandLineInput = process.argv;
 
 commandHandler(commandLineInput);
