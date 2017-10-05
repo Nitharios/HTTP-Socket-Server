@@ -17,6 +17,7 @@ const howTo = `\nHELP\n
 
 // returns an array
 let host, uri, flag, method;
+let http = 'HTTP/1.1';
 let PORT = process.env.PORT || 80;
 let commandLineInput = process.argv;
 
@@ -108,7 +109,7 @@ function setPort(current, index) {
 
 // generates the Request Header
 function generateRequest(request, method) {
-  let requestHeader = `${method} /${uri} HTTP/1.1
+  let requestHeader = `${method} /${uri} ${http}
 Host: ${host}:${PORT}
 Connection: ${connection}
 User-Agent: ${userAgent}
@@ -125,15 +126,14 @@ Accept: ${accept}
 
 // generates error codes
 function generateErrorMessage(errorCode) {
-
   let statusHandlers = {
-    '400' : `ERROR 400 Bad Request\n`,
-    '404' : `ERROR 404 ${host} cannot be reached!\n`,
-    '414' : `ERROR 414 ${host}/${uri} has exceeded the character limit\n`,
-    '418' : `I'm a teapot!\n`,
-    '500' : `ERROR 500 Internal Service Error\n`,
-    '504' : `ERROR 504 Network connection has timed out\n`,
-    '505' : `ERROR 505 HTTP version is not supported\n`
+    '400' : `\nERROR 400 Bad Request\n`,
+    '404' : `\nERROR 404 ${host} cannot be reached!\n`,
+    '414' : `\nERROR 414 ${host}/${uri} has exceeded the character limit\n`,
+    '418' : `\nI'm a teapot!\n`,
+    '500' : `\nERROR 500 Internal Service Error\n`,
+    '504' : `\nERROR 504 Network connection has timed out\n`,
+    '505' : `\nERROR 505 HTTP version is not supported\n`
   };
 
   if (statusHandlers.hasOwnProperty(errorCode)) process.stdout.write(statusHandlers[errorCode]);
