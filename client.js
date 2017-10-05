@@ -33,6 +33,7 @@ const request = new net.connect({port: PORT, host: host}, () => {
 });
 
 request.on('error', (err) => {
+  errorGenerator(404);
   throw err;
 });
 
@@ -83,13 +84,15 @@ function commandHandler(input) {
     method = 'GET';
     host = input[2].split('/')[0] || input[2];
     uri = input[2].split('/')[1] || '';
-  
+    console.log(host);
+
   } else {
     method = 'GET';
     process.stdin.write(howTo);
   } 
 }
 
+// Sets the port if the user defines one
 function setPort(current, index) {
   if (current.includes(':')) {
     PORT = current.slice(current.indexOf(':')+1, current.length);
@@ -113,3 +116,21 @@ Accept: ${accept}
 }
 
 // generates the Request Body
+
+// generates error codes
+function errorGenerator(errorCode) {
+
+  let statusHandlers = {
+    '400' : `ERROR 400 Bad Request\n`,
+    '404' : `ERROR 404 ${host} cannot be reached!\n`,
+    '414' : `ERROR 414 ${host}/${uri} has exceeded the character limit\n`,
+    '418' : `I'm a teapot!\n`,
+    '500' : `ERROR 500 Internal Service Error\n`,
+    '504' : `ERROR 504 Network connection has timed out\n`,
+    '505' : `ERROR 505 HTTP version is not supported\n`
+  };
+
+  console.log('here');
+  if (statusHandlers.hasOwnProperty(errorCode)) process.stdout.write(statusHandlers[errorCode]);
+  else process.stdout.write('Unknown Error shrugs.jpeg\n');
+}
